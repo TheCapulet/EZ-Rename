@@ -758,15 +758,36 @@ class RenamePlanner:
         return chosen.get("id"), chosen.get("name") or guess
 
     def _resolve_show(self, show_guess: str) -> Optional[Tuple[int,str]]:
-        if show_guess in self.cache:
-            return self.cache[show_guess]
-        cands = tvmaze_search_show_candidates(show_guess)
-        if not cands:
-            return None
-        ident = (cands[0].get("id"), cands[0].get("name")) if len(cands) == 1 else self._choose_show(show_guess, cands)
+        key = (show_guess or "").strip()
+        if key in self.cache:
+            return self.cache[key]
+
+        def _query(q: str) -> Optional[Tuple[int,str]]:
+            q_key = (q or "").strip()
+            if q_key in self.cache:
+                return self.cache[q_key]
+            cands = tvmaze_search_show_candidates(q_key)
+            if not cands:
+                return None
+            ident = (cands[0].get("id"), cands[0].get("name")) if len(cands) == 1 else self._choose_show(q_key, cands)
+            if ident:
+                self.cache[q_key] = ident
+            return ident
+
+        ident = _query(key) if key else None
         if ident:
-            self.cache[show_guess] = ident
-        return ident
+            return ident
+
+        alt = self._get_show_guess_or_prompt(None)
+        alt_key = (alt or "").strip()
+        if alt_key and alt_key != key:
+            ident = _query(alt_key)
+            if ident:
+                if key:
+                    self.cache[key] = ident
+                return ident
+
+        return None
 
     def _get_show_guess_or_prompt(self, current_guess: Optional[str]) -> Optional[str]:
         if current_guess:
