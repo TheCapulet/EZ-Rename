@@ -33,10 +33,11 @@ Users may define additional noise tokens to strip from filenames during show-nam
 Dependencies: 
 Required:
 Python 3.9 or newer
+https://www.python.org/downloads/
 
 Optional:
 mutagen (for MP4/MOV/AVI metadata)
-MKVToolNix / mkvpropedit (for MKV metadata)
+MKVToolNix (for MKV metadata)
 The application includes an installation helper for optional dependencies on Windows, macOS, and Linux.
 
 Options File:
@@ -46,7 +47,7 @@ This file contains folder paths, theme preferences, metadata settings, custom no
 
 Simple Usage:
 
-1. Select a folder containing TV episode files.
+1. Run the script and either select a folder containing TV episode files, or it can be run directly from the folder you'd like to scan.
 2. Click Scan to detect episodes and retrieve titles.
 3. Review the planned renames and skipped items.
 4. Click Apply Renames to perform the operations.
